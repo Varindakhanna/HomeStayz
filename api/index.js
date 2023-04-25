@@ -1,18 +1,22 @@
 const express = require('express');
 const cors = require('cors');
-const  mongoose  = require('mongoose');
+const mongoose  = require('mongoose');
 const User =require('./models/User');
 const cookieParser=require('cookie-parser');
 const bcrypt=require('bcryptjs');
 const jwt=require('jsonwebtoken');
 require('dotenv').config()
 
+
 const app=express();
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret = 'fasefraw4r5r3wq45wdfgw34twdfg';
+const imageDownloader=require('image-downloader');
+
 
 app.use(express.json())
 app.use(cookieParser());
+app.use('/uploads',express.static(__dirname+'/uploads'));
 
 app.use(cors({
     credentials:true,
@@ -84,5 +88,20 @@ app.get('/profile', (req,res) => {
     } else { 
       res.json(null);
     }
+  });
+
+  app.post('/logout',(req,res)=>{
+    res.cookie('token','').json(true);
+  });
+  //console.log({__dirname});
+
+  app.post('/upload-by-link',async(req,res)=>{
+   const {link}=req.body;
+   const newName= 'photo'+Date.now()+'.jpg';
+   await imageDownloader.image({
+    url:link,
+    dest:__dirname + '/uploads/'+newName,
+   })
+   res.json(newName);
   });
 app.listen(4000);

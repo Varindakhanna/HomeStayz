@@ -5,8 +5,7 @@ function IndexPage()
 {
     return(
         <div>
-         INDEX PG HERE right
-         hello 
+         INDEX PG HERE 
       </div>
     );
     
