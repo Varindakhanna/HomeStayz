@@ -135,5 +135,30 @@ app.get('/profile', (req,res) => {
     });
   });
 
+  app.put('/places', async (req,res) => {
+    //mongoose.connect(process.env.MONGO_URL);
+    const {token} = req.cookies;
+    const {
+      id, title,address,addedPhotos,description,
+      perks,extraInfo,checkIn,checkOut,maxGuests,price,
+    } = req.body;
+    jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+      if (err) throw err;
+      const placeDoc = await Place.findById(id);
+      if (userData.id === placeDoc.owner.toString()) {
+        placeDoc.set({
+          title,address,photos:addedPhotos,description,
+          perks,extraInfo,checkIn,checkOut,maxGuests,price,
+        });
+        await placeDoc.save();
+        res.json('ok');
+      }
+    });
+  });
+  app.get('/api/places/:id', async (req,res) => {
+    mongoose.connect(process.env.MONGO_URL);
+    const {id} = req.params;
+    res.json(await Place.findById(id));
+  });
 
 app.listen(4000);
