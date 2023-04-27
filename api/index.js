@@ -12,6 +12,7 @@ const app=express();
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret = 'fasefraw4r5r3wq45wdfgw34twdfg';
 const imageDownloader=require('image-downloader');
+const Place = require('./models/Place');
 
 
 app.use(express.json())
@@ -105,8 +106,8 @@ app.get('/profile', (req,res) => {
    res.json(newName);
   });
 
-  app.post('/places', (req,res) => {
-    //mongoose.connect(process.env.MONGO_URL);
+  app.post('/places', async(req,res) => {
+   // mongoose.connect(process.env.MONGO_URL);
     const {token} = req.cookies;
     const {
       title,address,addedPhotos,description,price,
@@ -122,4 +123,17 @@ app.get('/profile', (req,res) => {
       res.json(placeDoc);
     });
   });
+
+  app.get('/placesGet', (req,res) => {
+    console.log("someone called me hieh!?");
+    //mongoose.connect(process.env.MONGO_URL);
+    const {token} = req.cookies;
+    console.log(token);
+    jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+      const {id} = userData;
+      res.json( await Place.find({owner:id}) );
+    });
+  });
+
+
 app.listen(4000);

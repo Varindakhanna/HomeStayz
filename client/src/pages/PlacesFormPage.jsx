@@ -62,15 +62,19 @@ export default function PlacesFormPage() {
       description, perks, extraInfo,
       checkIn, checkOut, maxGuests, price,
     };
-    // if (id) {
-    //   // update
-    //   await axios.put('/places', {
-    //     id, ...placeData
-    //   });
-    //   setRedirect(true);
-    // } else {
-    //   // new place
-    //   await axios.post('/places', placeData);
+
+    console.log(id);
+    
+    if (id) {
+      // update
+      await axios.put('/places', {
+        id, ...placeData
+      });
+      setRedirect(true);
+    } else {
+      // new place
+      await axios.post('/places', placeData);
+    }
       setRedirect(true);
     }
 
