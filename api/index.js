@@ -5,6 +5,7 @@ const User =require('./models/User');
 const cookieParser=require('cookie-parser');
 const bcrypt=require('bcryptjs');
 const jwt=require('jsonwebtoken');
+ const Booking=require('./models/Booking');
 require('dotenv').config()
 
 
@@ -124,7 +125,7 @@ app.get('/profile', (req,res) => {
     });
   });
 
-  app.get('/placesGet', (req,res) => {
+  app.get('/user-placesGet', (req,res) => {
     console.log("someone called me hieh!?");
     //mongoose.connect(process.env.MONGO_URL);
     const {token} = req.cookies;
@@ -155,10 +156,33 @@ app.get('/profile', (req,res) => {
       }
     });
   });
-  app.get('/api/places/:id', async (req,res) => {
-    mongoose.connect(process.env.MONGO_URL);
+
+  app.get('/place/:id', async (req,res) => {
+   // mongoose.connect(process.env.MONGO_URL);
     const {id} = req.params;
     res.json(await Place.findById(id));
+  });
+
+  app.get('/places', async (req,res) => {
+    //mongoose.connect(process.env.MONGO_URL);
+    res.json( await Place.find() );
+  });
+
+
+  app.post('/bookings', (req, res) => {
+    //mongoose.connect(process.env.MONGO_URL);
+    //const userData = await getUserDataFromReq(req);
+    const {
+      place,checkIn,checkOut,numberOfGuests,name,phone,price,
+    } = req.body;
+    Booking.create({
+      place,checkIn,checkOut,numberOfGuests,name,phone,price,
+      
+    }).then((doc) => {
+      res.json(doc);
+    }).catch((err) => {
+      throw err;
+    });
   });
 
 app.listen(4000);
